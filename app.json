@@ -2,6 +2,7 @@
   "name": "poker-player-haskell",
   "description": "Haskell client skeleton for Lean Poker",
   "repository": "https://github.com/kmate/poker-player-haskell",
+  "logo": "http://leanpoker.org/favicon.ico",
   "buildpacks": [
     {
       "url": "https://github.com/mietek/haskell-on-heroku"
