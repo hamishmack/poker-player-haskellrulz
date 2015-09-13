@@ -10,3 +10,5 @@ heroku create -b https://github.com/mietek/haskell-on-heroku
 ```
 
 It enables the usage of the [Halcyon](https://halcyon.sh/)-based [Haskell build pack](https://haskellonheroku.com).
+
+The default port of the service is 8080. It could be changed by setting the `PORT` environment variable.
