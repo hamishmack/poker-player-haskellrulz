@@ -1,0 +1,17 @@
+{
+  "name": "poker-player-haskell",
+  "description": "Haskell client skeleton for Lean Poker",
+  "repository": "https://github.com/kmate/poker-player-haskell",
+  "env": {
+    "BUILDPACK_URL": {
+      "description": "Heroku buildpack for deploying Haskell apps",
+      "value": "https://github.com/mietek/haskell-on-heroku"
+    },
+    "PORT": {
+      "description": "Web server port",
+      "required": false,
+      "value": "8080"
+    }
+  }
+}
+
