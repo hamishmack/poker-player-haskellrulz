@@ -6,7 +6,7 @@ homepage:            https://github.com/kmate/poker-player-haskell
 build-type:          Simple
 cabal-version:       >= 1.18
 
-executable player
+executable poker-player-haskell
   main-is:            PlayerService.hs
   default-language:   Haskell2010
   default-extensions: DeriveGeneric,
