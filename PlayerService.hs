@@ -26,6 +26,7 @@ handler request respond = if methodPost == requestMethod request
         state        = parseJSON $ getParam "game_state" "{}" :: Either String Object
         withState f  = either badRequest f state
     case action of
+      "check"       -> sayVersion
       "version"     -> sayVersion
       "bet_request" -> withState $ \s -> betRequest s >>= ok . pack . show
       "showdown"    -> withState $ \s -> showdown s >> ok ""
