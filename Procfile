@@ -1,2 +1,2 @@
-web: bin/poker-player-haskell
+web: poker-player-haskell
 
