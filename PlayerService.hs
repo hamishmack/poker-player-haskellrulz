@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric, OverloadedStrings #-}
+module Main (main) where
+
 import Control.Applicative ((<$>))
 import Data.Aeson (eitherDecode', Object)
 import Data.ByteString.Lazy (append, fromStrict)
@@ -11,6 +14,9 @@ import System.Environment (lookupEnv)
 import GameState
 import Player
 
+-- $setup
+-- >>> import qualified Data.ByteString.Char8 as BS (pack)
+-- >>> import Data.Either (isRight)
 
 main :: IO ()
 main = do
@@ -18,6 +24,9 @@ main = do
   putStrLn $ "Listening on port " ++ show port ++ "..."
   run port handler
 
+-- |
+-- >>> isRight . parseJSON . BS.pack <$> readFile "test/GameStateSample.json"
+-- True
 handler :: Application
 handler request respond = if methodPost == requestMethod request
   then do
@@ -34,7 +43,6 @@ handler request respond = if methodPost == requestMethod request
       _             -> badRequest "unknown action"
   else sayVersion
   where
-    parseJSON = eitherDecode' . fromStrict
     sayVersion = ok $ pack $ defaultVersion
     ok = send status200
     badRequest = send status400 . append "Bad request: " . pack
@@ -42,3 +50,4 @@ handler request respond = if methodPost == requestMethod request
     headers = [ (hServer, "Haskell Lean Poker Player")
               , (hContentType, "text/plain") ]
 
+parseJSON = eitherDecode' . fromStrict
