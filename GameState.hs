@@ -3,6 +3,8 @@ module GameState where
 import Data.Text
 import Data.Aeson
 
+type Chips = Int
+type PlayerID = Int
 
 data Game
   = Game 
@@ -10,13 +12,13 @@ data Game
     , game_id          :: Text
     , round            :: Int
     , bet_index        :: Int
-    , small_blind      :: Int
-    , current_buy_in   :: Int
-    , pot              :: Int 
-    , minimum_raise    :: Int
-    , dealer           :: Int
+    , small_blind      :: Chips
+    , current_buy_in   :: Chips
+    , pot              :: Chips
+    , minimum_raise    :: Chips
+    , dealer           :: PlayerID
     , orbits           :: Int   
-    , in_action        :: Int
+    , in_action        :: PlayerID
     , players          :: [ Player ]
     , community_cards  :: [ Card ]
     } deriving (Eq, Show)
@@ -38,15 +40,22 @@ instance FromJSON Game where
                <*> v .: "community_cards"
     parseJSON _  = error "Not an object"
 
+data Status = Active | Folded | Out
+    deriving (Enum, Eq, Show)
+instance FromJSON Status where
+    parseJSON (String "active") = return Active
+    parseJSON (String "folded") = return Folded
+    parseJSON (String "out")    = return Out
+    parseJSON _ = error "Unknown Player Status"
 
 data Player 
   = Player
-    { player_id  :: Int
+    { player_id  :: PlayerID
     , name       :: Text
-    , status     :: Text
+    , status     :: Status
     , version    :: Text
-    , stack      :: Int
-    , bet        :: Int
+    , stack      :: Chips
+    , bet        :: Chips
     , hole_cards :: [ Card ]
     } deriving (Eq, Show)
 
