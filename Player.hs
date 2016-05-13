@@ -1,6 +1,6 @@
 module Player (
     betRequest
-  , version
+  , defaultVersion
   , showdown
 ) where
 

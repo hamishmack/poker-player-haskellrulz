@@ -61,8 +61,43 @@ instance FromJSON Player where
                  <*> v .: "hole_cards"
     parseJSON _  = error "Not an object"
 
-type Rank = Text
-type Suit = Text
+data Rank = Two | Three | Four | Five | Six | Seven | Eight | Nine
+    | Ten | Jack | Queen | King | Ace 
+    deriving (Enum, Eq, Show)
+instance FromJSON Rank where
+    parseJSON (String val)
+        = return $
+            case val of
+                "2" -> Two
+                "3" -> Three
+                "4" -> Four
+                "5" -> Five
+                "6" -> Six
+                "7" -> Seven
+                "8" -> Eight
+                "9" -> Nine
+                "10" -> Ten
+                "J" -> Jack
+                "Q" -> Queen
+                "K" -> King
+                "A" -> Ace
+                _   -> error "Unknown rank"
+    parseJSON _  = error "Not a string"
+
+data Suit = Clubs | Hearts | Spades | Dimonds
+    deriving (Enum, Eq, Show)
+instance FromJSON Suit where
+    parseJSON (String val)
+        = return $
+            case val of
+                "spades"   -> Spades
+                "clubs"    -> Clubs
+                "hearts"   -> Hearts
+                "dimonds"  -> Dimonds
+                _   -> error "Unknown suit"
+    parseJSON _  = error "Not a string"
+
+
 data Card 
   = Card Rank Suit
     deriving (Eq, Show)
