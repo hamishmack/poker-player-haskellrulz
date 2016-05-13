@@ -8,6 +8,7 @@ import Network.Wai.Handler.Warp (run)
 import Network.HTTP.Types (hServer, hContentType, status200, status400, methodPost)
 import System.Environment (lookupEnv)
 
+import GameState
 import Player
 
 
@@ -34,7 +35,7 @@ handler request respond = if methodPost == requestMethod request
   else sayVersion
   where
     parseJSON = eitherDecode' . fromStrict
-    sayVersion = ok $ pack $ version
+    sayVersion = ok $ pack $ defaultVersion
     ok = send status200
     badRequest = send status400 . append "Bad request: " . pack
     send status = respond . responseLBS status headers
