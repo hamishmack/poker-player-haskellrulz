@@ -62,10 +62,10 @@ findStraight = undefined
 
 findThree :: [Card] -> [Card] -> Maybe ([Card], Hand)
 findThree player community = 
-    let cards = sort $ reverse $ player ++ community
+    let cards = reverse $ sort $ player ++ community
         pairs = [ c | c <- groupBy matchRank cards, length c == 3 ]
     in case (reverse $ sort pairs) of
-        a:_ -> Just (arePlayerCards player a, Pair $ head a)
+        a:_ -> Just (arePlayerCards player a, ThreeOfAKind $ head a)
         _   -> Nothing
 
 findTwoPair :: [Card] -> [Card] -> Maybe ([Card], Hand)
