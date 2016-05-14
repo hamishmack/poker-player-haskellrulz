@@ -65,8 +65,43 @@ findFullHouse player community =
 findFlush :: [Card] -> [Card] -> Maybe ([Card], Hand)
 findFlush _ _ = Nothing
 
+-- |
+-- >>> (findStraight [] [Card Two Hearts])
+-- Nothing
+-- >>> (findStraight [] [Card Three Hearts, Card Four Hearts, Card Five Hearts, Card Six Hearts, Card Seven Hearts])
+-- Just ([],Straight (Card {rank = Seven, suit = Hearts}))
+-- >>> (findStraight [] [Card Two Hearts, Card Four Hearts, Card Five Hearts, Card Six Hearts, Card Seven Hearts])
+-- Nothing
+
 findStraight :: [Card] -> [Card] -> Maybe ([Card], Hand)
-findStraight _ _ = Nothing
+findStraight holeCards communityCards = 
+  -- TODO : This needs to handle straights where an Ace is the low card
+  -- TODO : This needs to return which of my cards were used
+  let
+    cards = holeCards ++ communityCards
+
+    sortedCards = map head . groupBy matchRank . sortOn rank $ cards
+
+    listOfStraitsF :: [Card] -> [[Card]] -> [Card] -> [[Card]]
+    listOfStraitsF currentStrait acc remaining =
+      case remaining of
+        [] -> currentStrait : acc
+        (x : xs) ->
+          if (fromEnum . rank $ x) == (fromEnum . rank $ (head currentStrait)) + 1
+          then listOfStraitsF (x : currentStrait) acc xs
+          else listOfStraitsF [x] (currentStrait : acc) xs
+
+
+    listOfStraits = listOfStraitsF [head sortedCards] [] (tail sortedCards)
+
+    longestStrait = last . sortOn length $ listOfStraits
+
+
+  in
+    if length longestStrait < 5
+    then Nothing
+    else Just ([], Straight (head longestStrait))
+
 
 
 findThree :: [Card] -> [Card] -> Maybe ([Card], Hand)
