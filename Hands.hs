@@ -8,7 +8,7 @@ import GameState (Card(..), Rank(..), Suit(..))
 
 data Hand
   = StraightFlush Card
-  | FourOfAKind Card
+  | FourOfAKind Rank
   | FullHouse Rank Rank
   | Flush Card
   | Straight Card
