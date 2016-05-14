@@ -9,7 +9,7 @@ import Network.Wai.Handler.Warp (run)
 import Network.HTTP.Types (hServer, hContentType, status200, status400, methodPost)
 import System.Environment (lookupEnv)
 
-import GameState
+import GameState(parseGameState, GameState)
 import Player
 
 -- $setup

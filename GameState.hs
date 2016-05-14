@@ -86,7 +86,7 @@ instance FromJSON Player where
 
 data Rank = Two | Three | Four | Five | Six | Seven | Eight | Nine
     | Ten | Jack | Queen | King | Ace 
-    deriving (Enum, Eq, Show)
+    deriving (Enum, Eq, Show, Ord)
 instance FromJSON Rank where
     parseJSON (String val)
         = return $
@@ -108,7 +108,7 @@ instance FromJSON Rank where
     parseJSON _  = error "Not a string"
 
 data Suit = Clubs | Hearts | Spades | Diamonds
-    deriving (Enum, Eq, Show)
+    deriving (Enum, Eq, Show, Ord)
 instance FromJSON Suit where
     parseJSON (String val)
         = return $
@@ -123,7 +123,7 @@ instance FromJSON Suit where
 
 data Card 
   = Card Rank Suit
-    deriving (Eq, Show)
+    deriving (Show, Ord, Eq)
 
 instance FromJSON Card where
     parseJSON (Object v) = Card <$>

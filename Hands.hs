@@ -1,17 +1,18 @@
 module Hands where
 
+import Data.List (sort)
 import Data.Maybe (fromMaybe)
 import Control.Applicative ((<|>))
-import GameState (Card(..))
+import GameState (Card(..), Rank(..), Suit(..))
 
 
 data Hand
   = StraightFlush Card
-  | Four Card
+  | FourOfAKind Card
   | FullHouse Card Card
   | Flush Card
   | Straight Card
-  | Three Card
+  | ThreeOfAKind Card
   | TwoPair Card Card
   | Pair Card
   | High Card
@@ -30,6 +31,11 @@ getHand player community =
         <|> findTwoPair player community
         <|> findPair player community)
     
+matchRank :: Card -> Card -> Bool
+matchRank (Card r _) (Card r' _) = r == r'
+
+matchSuit :: Card -> Card -> Bool
+matchSuit (Card _ s) (Card _ s') = s == s'
 
 
 findStraightFlush :: [Card] -> [Card] -> Maybe ([Card], Hand)
@@ -56,7 +62,14 @@ findTwoPair :: [Card] -> [Card] -> Maybe ([Card], Hand)
 findTwoPair = undefined 
 
 findPair :: [Card] -> [Card] -> Maybe ([Card], Hand)
-findPair = undefined
+findPair player community = 
+    let all = player ++ community
+        pairs = [ c | c <- all, d <- all, matchRank c d ]
+        arePlayer :: Card -> [Card]
+        arePlayer a = if a `elem` player then [a] else []
+    in case sort pairs of
+        a:_ -> Just (arePlayer a, Pair a)
+        _   -> Nothing
 
 findHigh :: [Card] -> [Card] -> ([Card], Hand)
 findHigh = undefined
