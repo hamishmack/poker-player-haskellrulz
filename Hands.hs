@@ -40,6 +40,9 @@ matchSuit (Card _ s) (Card _ s') = s == s'
 arePlayerCards :: [Card] -> [Card] -> [Card]
 arePlayerCards player cs = [ c | c <- cs, c `elem` player ]
 
+
+
+
 findStraightFlush :: [Card] -> [Card] -> Maybe ([Card], Hand)
 findStraightFlush = undefined
 
@@ -58,7 +61,12 @@ findStraight = undefined
 
 
 findThree :: [Card] -> [Card] -> Maybe ([Card], Hand)
-findThree = undefined
+findThree player community = 
+    let cards = sort $ reverse $ player ++ community
+        pairs = [ c | c <- groupBy matchRank cards, length c == 3 ]
+    in case (reverse $ sort pairs) of
+        a:_ -> Just (arePlayerCards player a, Pair $ head a)
+        _   -> Nothing
 
 findTwoPair :: [Card] -> [Card] -> Maybe ([Card], Hand)
 findTwoPair = undefined 
