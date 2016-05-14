@@ -37,6 +37,9 @@ data GameState
     , community_cards  :: [ Card ]
     } deriving (Eq, Show)
 
+getPlayer :: GameState -> Player
+getPlayer gamestate = (players gamestate) !! (in_action gamestate)
+
 instance FromJSON GameState where
     parseJSON (Object v) 
         = GameState 
