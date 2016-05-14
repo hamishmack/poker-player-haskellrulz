@@ -5,6 +5,7 @@ import qualified Data.ByteString.Lazy.Char8 as BS
 import Data.Text
 import Data.Aeson
 import Test.QuickCheck
+import Data.List
 
 -- $setup
 -- >>> import Data.Either (isRight)
@@ -122,7 +123,7 @@ instance FromJSON Suit where
 
 
 data Card 
-  = Card Rank Suit
+  = Card {rank :: Rank, suit :: Suit}
     deriving (Show, Ord, Eq)
 
 instance FromJSON Card where
