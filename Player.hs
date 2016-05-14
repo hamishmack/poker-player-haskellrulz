@@ -25,13 +25,18 @@ betRequest gameState@GameState{..} = do
         player_cards = fromMaybe [] (hole_cards me)
         (mine, hand) = getHand player_cards community_cards
 
-        strategy | pot `div` small_blind < 10 = 1
-                 | pot `div` small_blind < 20 = 2 
-                 | pot `div` small_blind < 80 = 3 
-                 | pot `div` small_blind < 140 = 4 
+        strategy | length community_cards == 0  = 0
+                 |  pot `div` small_blind < 10  = 1
+                 | pot `div` small_blind < 20   = 2 
+                 | pot `div` small_blind < 80   = 3 
+                 | pot `div` small_blind < 140  = 4 
              
         play = 
             case strategy of
+                0 -> case (length mine, hand) of 
+                        (2, Pair r)          -> if r >= Ten then Raise else Call
+                        (1, High (Card r _)) -> if r >= Queen then Call else Fold
+                        _                    -> Fold
                 1 -> case (length mine, hand) of 
                         (_, Straight _ )     -> Raise
                         (_, FullHouse _ _)   -> Raise
