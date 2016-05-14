@@ -27,26 +27,29 @@ betRequest gameState@GameState{..} = do
 
         strategy | pot `div` small_blind < 10 = 1
                  | pot `div` small_blind < 20 = 2 
-                 | pot `div` small_blind < 30 = 3 
-                 | pot `div` small_blind < 40 = 4 
+                 | pot `div` small_blind < 80 = 3 
+                 | pot `div` small_blind < 140 = 4 
              
         play = 
             case strategy of
                 1 -> case (length mine, hand) of 
+                        (_, Straight _ )     -> Raise
                         (_, FullHouse _ _)   -> Raise
                         (_, FourOfAKind _)   -> Raise
                         (1, ThreeOfAKind _)  -> Raise
-                        (2, TwoPair _ _)     -> Raise
-                        (2, Pair _)          -> Raise
-                        _                    -> Fold
+                        (2, TwoPair _ _)     -> Call
+                        (2, Pair _)          -> Call
+                        _                    -> Call
                 2 -> case (length mine, hand) of 
+                        (_, Straight _ )     -> Raise
                         (_, FullHouse _ _)   -> Raise
                         (_, FourOfAKind _)   -> Raise
                         (1, ThreeOfAKind _)  -> Call
                         (2, TwoPair _ _)     -> Call
                         (2, Pair _)          -> Call
-                        _                    -> Fold
+                        _                    -> Call
                 3 -> case (length mine, hand) of 
+                        (_, Straight _ )     -> Raise
                         (_, FullHouse _ _)   -> Raise
                         (_, FourOfAKind _)   -> Raise
                         (1, ThreeOfAKind _)  -> Call
@@ -54,8 +57,9 @@ betRequest gameState@GameState{..} = do
                         (2, Pair _)          -> Fold
                         _                    -> Fold
                 4 -> case (length mine, hand) of 
-                        (_, FullHouse _ _)   -> Raise
-                        (_, FourOfAKind _)   -> Raise
+                        (_, Straight _ )     -> Call
+                        (_, FullHouse _ _)   -> Call
+                        (_, FourOfAKind _)   -> Call
                         (1, ThreeOfAKind _)  -> Fold
                         (2, TwoPair _ _)     -> Fold
                         (2, Pair _)          -> Fold
