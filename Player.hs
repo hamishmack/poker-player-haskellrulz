@@ -26,10 +26,10 @@ betRequest gameState@GameState{..} = do
         (mine, hand) = getHand player_cards community_cards
 
         strategy | length community_cards == 0  = 0
-                 | pot `div` small_blind < 10   = 1
-                 | pot `div` small_blind < 20   = 2 
-                 | pot `div` small_blind < 80   = 3 
-                 | pot `div` small_blind < 140  = 4 
+                 | pot `div` small_blind < 100   = 1
+                 | pot `div` small_blind < 200   = 2 
+                 | pot `div` small_blind < 800   = 3 
+                 | pot `div` small_blind < 1400  = 4 
                  | otherwise                    = 4
              
         play = 
