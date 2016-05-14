@@ -29,7 +29,7 @@ betRequest gameState@GameState{..} = do
                 (_, Pair _)          -> True
                 _               -> False
     if bet
-        then pot
+        then return pot
         else return 0
 
 
