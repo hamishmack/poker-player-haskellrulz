@@ -14,7 +14,7 @@ defaultVersion = "Default Haskell folding player"
 -- >>> betRequest mempty
 -- 0
 betRequest :: Object -> IO Int
-betRequest gameState = return 0
+betRequest gameState = return 1000
 
 showdown :: Object -> IO ()
 showdown gameState = return ()
