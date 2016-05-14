@@ -9,12 +9,12 @@ import GameState (Card(..), Rank(..), Suit(..))
 data Hand
   = StraightFlush Card
   | FourOfAKind Card
-  | FullHouse Card Card
+  | FullHouse Rank Rank
   | Flush Card
   | Straight Card
-  | ThreeOfAKind Card
-  | TwoPair Card Card
-  | Pair Card
+  | ThreeOfAKind Rank
+  | TwoPair Rank Rank
+  | Pair Rank
   | High Card
     deriving (Eq, Show)
 
@@ -41,28 +41,32 @@ arePlayerCards :: [Card] -> [Card] -> [Card]
 arePlayerCards player cs = [ c | c <- cs, c `elem` player ]
 
 
-
-
 findStraightFlush :: [Card] -> [Card] -> Maybe ([Card], Hand)
-findStraightFlush = undefined
+findStraightFlush _ _ = Nothing
 
 findFour :: [Card] -> [Card] -> Maybe ([Card], Hand)
 findFour player community = 
     let cards = reverse $ sort $ player ++ community
         groups = [ c | c <- groupBy matchRank cards, length c >= 4 ]
     in case (reverse $ sort groups) of
-        a:_ -> Just (arePlayerCards player a, FourOfAKind $ head a)
+        a:_ -> Just (arePlayerCards player a, FourOfAKind $ rank $ head a)
         _   -> Nothing
 
 findFullHouse :: [Card] -> [Card] -> Maybe ([Card], Hand)
-findFullHouse = undefined
+findFullHouse player community = 
+    let cards = reverse $ sort $ player ++ community
+        threes = [ c | c <- groupBy matchRank cards, length c == 3 ]
+        fullhouses = [ (t, c) | t <- threes, c <- groupBy matchRank (cards \\ t), length c == 2 ]
+    in case (reverse $ sort fullhouses) of
+        (t,c):_ -> Just (arePlayerCards player (t ++ c), FullHouse (rank $ head t) (rank $ head c))
+        _   -> Nothing
 
 
 findFlush :: [Card] -> [Card] -> Maybe ([Card], Hand)
-findFlush = undefined
+findFlush _ _ = Nothing
 
 findStraight :: [Card] -> [Card] -> Maybe ([Card], Hand)
-findStraight = undefined
+findStraight _ _ = Nothing
 
 
 findThree :: [Card] -> [Card] -> Maybe ([Card], Hand)
@@ -70,7 +74,7 @@ findThree player community =
     let cards = reverse $ sort $ player ++ community
         pairs = [ c | c <- groupBy matchRank cards, length c >= 3 ]
     in case (reverse $ sort pairs) of
-        a:_ -> Just (arePlayerCards player a, ThreeOfAKind $ head a)
+        a:_ -> Just (arePlayerCards player a, ThreeOfAKind $ rank $ head a)
         _   -> Nothing
 
 findTwoPair :: [Card] -> [Card] -> Maybe ([Card], Hand)
@@ -78,7 +82,7 @@ findTwoPair player community =
     let cards = reverse $ sort $ player ++ community
         pairs = [ c | c <- groupBy matchRank cards, length c >= 2 ]
     in case (reverse $ sort pairs) of
-        a:b:_ -> Just (arePlayerCards player (a++b), TwoPair (head a) (head b))
+        a:b:_ -> Just (arePlayerCards player (a++b), TwoPair (rank $ head a) (rank $ head b))
         _   -> Nothing 
 
 findPair :: [Card] -> [Card] -> Maybe ([Card], Hand)
@@ -86,7 +90,7 @@ findPair player community =
     let cards = reverse $ sort $ player ++ community
         pairs = [ c | c <- groupBy matchRank cards, length c >= 2 ]
     in case (reverse $ sort pairs) of
-        a:_ -> Just (arePlayerCards player a, Pair $ head a)
+        a:_ -> Just (arePlayerCards player a, Pair $ rank $ head a)
         _   -> Nothing
 
 findHigh :: [Card] -> [Card] -> ([Card], Hand)
