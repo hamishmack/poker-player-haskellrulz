@@ -5,6 +5,7 @@ module Player (
 ) where
 
 import Data.Aeson (Object)
+import GameState
 
 
 defaultVersion :: String
@@ -13,9 +14,9 @@ defaultVersion = "Default Haskell folding player"
 -- |
 -- >>> betRequest mempty
 -- 0
-betRequest :: Object -> IO Int
+betRequest :: GameState -> IO Int
 betRequest gameState = return 0
 
-showdown :: Object -> IO ()
+showdown :: GameState -> IO ()
 showdown gameState = return ()
 

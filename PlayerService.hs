@@ -1,8 +1,6 @@
 {-# LANGUAGE DeriveGeneric, OverloadedStrings #-}
 module Main (main) where
 
-import Control.Applicative ((<$>))
-import Data.Aeson (eitherDecode', Object)
 import Data.ByteString.Lazy (append, fromStrict)
 import Data.ByteString.Lazy.Char8 (pack)
 import Network.Wai (Application, requestMethod, responseLBS)
@@ -24,16 +22,13 @@ main = do
   putStrLn $ "Listening on port " ++ show port ++ "..."
   run port handler
 
--- |
--- >>> isRight . parseJSON . BS.pack <$> readFile "test/GameStateSample.json"
--- True
 handler :: Application
 handler request respond = if methodPost == requestMethod request
   then do
     (params, _) <- parseRequestBody lbsBackEnd request
     let getParam n v = maybe v id $ lookup n params
         action       = getParam "action" "version"
-        state        = parseJSON $ getParam "game_state" "{}" :: Either String Object
+        state        = parseGameState $ fromStrict $ getParam "game_state" "{}" :: Either String GameState
         withState f  = either badRequest f state
     case action of
       "check"       -> sayVersion
@@ -46,8 +41,7 @@ handler request respond = if methodPost == requestMethod request
     sayVersion = ok $ pack $ defaultVersion
     ok = send status200
     badRequest = send status400 . append "Bad request: " . pack
-    send status = respond . responseLBS status headers
+    send status' = respond . responseLBS status' headers
     headers = [ (hServer, "Haskell Lean Poker Player")
               , (hContentType, "text/plain") ]
 
-parseJSON = eitherDecode' . fromStrict
