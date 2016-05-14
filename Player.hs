@@ -6,6 +6,7 @@ module Player (
 ) where
 
 import GameState
+import Hands
 
 
 defaultVersion :: String
@@ -16,7 +17,6 @@ defaultVersion = "Default Haskell folding player"
 -- 0
 betRequest :: GameState -> IO Int
 betRequest _gameState = return 1000
-
 
 
 showdown :: GameState -> IO ()

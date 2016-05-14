@@ -10,6 +10,7 @@ description:
 
 executable poker-player-haskell
     main-is: PlayerService.hs
+    other-modules: GameState, Player, Hands
     build-depends:
         base -any,
         aeson -any,
