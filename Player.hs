@@ -12,9 +12,6 @@ import Hands
 defaultVersion :: String
 defaultVersion = "Default Haskell folding player"
 
--- |
--- >>> betRequest mempty
--- 0
 betRequest :: GameState -> IO Int
 betRequest _gameState = return 1000
 
