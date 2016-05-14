@@ -47,7 +47,12 @@ findStraightFlush :: [Card] -> [Card] -> Maybe ([Card], Hand)
 findStraightFlush = undefined
 
 findFour :: [Card] -> [Card] -> Maybe ([Card], Hand)
-findFour = undefined
+findFour player community = 
+    let cards = reverse $ sort $ player ++ community
+        groups = [ c | c <- groupBy matchRank cards, length c >= 4 ]
+    in case (reverse $ sort groups) of
+        a:_ -> Just (arePlayerCards player a, FourOfAKind $ head a)
+        _   -> Nothing
 
 findFullHouse :: [Card] -> [Card] -> Maybe ([Card], Hand)
 findFullHouse = undefined
@@ -78,12 +83,16 @@ findTwoPair player community =
 
 findPair :: [Card] -> [Card] -> Maybe ([Card], Hand)
 findPair player community = 
-    let cards = sort $ reverse $ player ++ community
+    let cards = reverse $ sort $ player ++ community
         pairs = [ c | c <- groupBy matchRank cards, length c >= 2 ]
     in case (reverse $ sort pairs) of
         a:_ -> Just (arePlayerCards player a, Pair $ head a)
         _   -> Nothing
 
 findHigh :: [Card] -> [Card] -> ([Card], Hand)
-findHigh = undefined
+findHigh player community = 
+    let cards = reverse $ sort $ player ++ community
+        a = head cards
+    in (arePlayerCards player [a], High a)
+        
 
