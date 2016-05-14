@@ -42,23 +42,23 @@ betRequest gameState@GameState{..} = do
                 2 -> case (length mine, hand) of 
                         (_, FullHouse _ _)   -> Raise
                         (_, FourOfAKind _)   -> Raise
-                        (1, ThreeOfAKind _)  -> Raise
-                        (2, TwoPair _ _)     -> Raise
-                        (2, Pair _)          -> Raise
+                        (1, ThreeOfAKind _)  -> Call
+                        (2, TwoPair _ _)     -> Call
+                        (2, Pair _)          -> Call
                         _                    -> Fold
                 3 -> case (length mine, hand) of 
                         (_, FullHouse _ _)   -> Raise
                         (_, FourOfAKind _)   -> Raise
-                        (1, ThreeOfAKind _)  -> Raise
-                        (2, TwoPair _ _)     -> Raise
-                        (2, Pair _)          -> Raise
+                        (1, ThreeOfAKind _)  -> Call
+                        (2, TwoPair _ _)     -> Fold
+                        (2, Pair _)          -> Fold
                         _                    -> Fold
                 4 -> case (length mine, hand) of 
                         (_, FullHouse _ _)   -> Raise
                         (_, FourOfAKind _)   -> Raise
-                        (1, ThreeOfAKind _)  -> Raise
-                        (2, TwoPair _ _)     -> Raise
-                        (2, Pair _)          -> Raise
+                        (1, ThreeOfAKind _)  -> Fold
+                        (2, TwoPair _ _)     -> Fold
+                        (2, Pair _)          -> Fold
                         _                    -> Fold
                 _                    -> Fold
     case play of
