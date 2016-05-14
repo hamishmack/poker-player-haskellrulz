@@ -1,6 +1,6 @@
 module Hands where
 
-import Data.List (sort)
+import Data.List
 import Data.Maybe (fromMaybe)
 import Control.Applicative ((<|>))
 import GameState (Card(..), Rank(..), Suit(..))
@@ -37,6 +37,8 @@ matchRank (Card r _) (Card r' _) = r == r'
 matchSuit :: Card -> Card -> Bool
 matchSuit (Card _ s) (Card _ s') = s == s'
 
+arePlayerCards :: [Card] -> [Card] -> [Card]
+arePlayerCards player cs = [ c | c <- cs, c `elem` player ]
 
 findStraightFlush :: [Card] -> [Card] -> Maybe ([Card], Hand)
 findStraightFlush = undefined
@@ -63,12 +65,10 @@ findTwoPair = undefined
 
 findPair :: [Card] -> [Card] -> Maybe ([Card], Hand)
 findPair player community = 
-    let all = player ++ community
-        pairs = [ c | c <- all, d <- all, matchRank c d ]
-        arePlayer :: Card -> [Card]
-        arePlayer a = if a `elem` player then [a] else []
-    in case sort pairs of
-        a:_ -> Just (arePlayer a, Pair a)
+    let cards = sort $ reverse $ player ++ community
+        pairs = [ c | c <- groupBy matchRank cards, length c == 2 ]
+    in case (reverse $ sort pairs) of
+        a:_ -> Just (arePlayerCards player a, Pair $ head a)
         _   -> Nothing
 
 findHigh :: [Card] -> [Card] -> ([Card], Hand)
