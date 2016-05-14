@@ -13,7 +13,7 @@ import Hands
 
 
 defaultVersion :: String
-defaultVersion = "Default Haskell folding player"
+defaultVersion = "First attempt at a strategy"
 
 betRequest :: GameState -> IO Int
 betRequest gameState@GameState{..} = do
