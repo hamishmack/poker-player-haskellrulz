@@ -15,22 +15,56 @@ import Hands
 defaultVersion :: String
 defaultVersion = "First attempt at a strategy"
 
+type Strategy = Int
+    
+data Bet = Fold | Raise | Call
+
 betRequest :: GameState -> IO Int
 betRequest gameState@GameState{..} = do
-    let player_cards = fromMaybe [] (hole_cards $ getPlayer gameState)
+    let me = getPlayer gameState
+        player_cards = fromMaybe [] (hole_cards me)
         (mine, hand) = getHand player_cards community_cards
-        
-        bet = 
-            case (length mine, hand) of 
-                (_, FullHouse _ _)   -> True
-                (_, FourOfAKind _)   -> True
-                (1, ThreeOfAKind _)  -> True
-                (2, TwoPair _ _)     -> True
-                (2, Pair _)          -> True
-                _                    -> False
-    if bet
-        then return pot
-        else return 0
+
+        strategy | pot `div` small_blind < 10 = 1
+                 | pot `div` small_blind < 20 = 2 
+                 | pot `div` small_blind < 30 = 3 
+                 | pot `div` small_blind < 40 = 4 
+             
+        play = 
+            case strategy of
+                1 -> case (length mine, hand) of 
+                        (_, FullHouse _ _)   -> Raise
+                        (_, FourOfAKind _)   -> Raise
+                        (1, ThreeOfAKind _)  -> Raise
+                        (2, TwoPair _ _)     -> Raise
+                        (2, Pair _)          -> Raise
+                        _                    -> Fold
+                2 -> case (length mine, hand) of 
+                        (_, FullHouse _ _)   -> Raise
+                        (_, FourOfAKind _)   -> Raise
+                        (1, ThreeOfAKind _)  -> Raise
+                        (2, TwoPair _ _)     -> Raise
+                        (2, Pair _)          -> Raise
+                        _                    -> Fold
+                3 -> case (length mine, hand) of 
+                        (_, FullHouse _ _)   -> Raise
+                        (_, FourOfAKind _)   -> Raise
+                        (1, ThreeOfAKind _)  -> Raise
+                        (2, TwoPair _ _)     -> Raise
+                        (2, Pair _)          -> Raise
+                        _                    -> Fold
+                4 -> case (length mine, hand) of 
+                        (_, FullHouse _ _)   -> Raise
+                        (_, FourOfAKind _)   -> Raise
+                        (1, ThreeOfAKind _)  -> Raise
+                        (2, TwoPair _ _)     -> Raise
+                        (2, Pair _)          -> Raise
+                        _                    -> Fold
+                _                    -> Fold
+    case play of
+        Raise -> return pot
+        Call  -> return (current_buy_in - (bet me))
+        Fold  -> return 0
 
 
 showdown :: GameState -> IO ()
