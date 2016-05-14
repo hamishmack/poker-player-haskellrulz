@@ -20,16 +20,16 @@ betRequest gameState@GameState{..} = do
     let player_cards = fromMaybe [] (hole_cards $ getPlayer gameState)
         (mine, hand) = getHand player_cards community_cards
         
-        potentialbet = 
+        bet = 
             case (length mine, hand) of 
-                (_, FullHouse _ _)   -> 1000
-                (_, FourOfAKind _)   -> 200
-                (1, ThreeOfAKind _)  -> 100
-                (2, TwoPair _ _)     -> 75
-                (2, Pair _)          -> 50
-                _               -> 0
-    if potentialbet > minimum_raise
-        then return potentialbet
+                (_, FullHouse _ _)   -> True
+                (_, FourOfAKind _)   -> True
+                (_, ThreeOfAKind _)  -> True
+                (_, TwoPair _ _)     -> True
+                (_, Pair _)          -> True
+                _               -> False
+    if bet
+        then pot
         else return 0
 
 
