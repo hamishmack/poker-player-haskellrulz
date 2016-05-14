@@ -4,6 +4,7 @@ module GameState where
 import qualified Data.ByteString.Lazy.Char8 as BS
 import Data.Text
 import Data.Aeson
+import Test.QuickCheck
 
 -- $setup
 -- >>> import Data.Either (isRight)
@@ -106,7 +107,7 @@ instance FromJSON Rank where
                 _   -> error "Unknown rank"
     parseJSON _  = error "Not a string"
 
-data Suit = Clubs | Hearts | Spades | Dimonds
+data Suit = Clubs | Hearts | Spades | Diamonds
     deriving (Enum, Eq, Show)
 instance FromJSON Suit where
     parseJSON (String val)
@@ -115,7 +116,7 @@ instance FromJSON Suit where
                 "spades"   -> Spades
                 "clubs"    -> Clubs
                 "hearts"   -> Hearts
-                "dimonds"  -> Dimonds
+                "diamonds"  -> Diamonds
                 _   -> error "Unknown suit"
     parseJSON _  = error "Not a string"
 
@@ -129,4 +130,7 @@ instance FromJSON Card where
                            v .: "rank" <*>
                            v .: "suit"
     parseJSON _  = error "Not an object"
+
+instance Arbitrary Card where
+    arbitrary = Card <$> elements [Two .. Ace] <*> elements [Clubs .. Diamonds]
 
