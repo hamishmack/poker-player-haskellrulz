@@ -24,10 +24,10 @@ betRequest gameState@GameState{..} = do
             case (length mine, hand) of 
                 (_, FullHouse _ _)   -> True
                 (_, FourOfAKind _)   -> True
-                (_, ThreeOfAKind _)  -> True
-                (_, TwoPair _ _)     -> True
-                (_, Pair _)          -> True
-                _               -> False
+                (1, ThreeOfAKind _)  -> True
+                (2, TwoPair _ _)     -> True
+                (2, Pair _)          -> True
+                _                    -> False
     if bet
         then return pot
         else return 0
