@@ -30,7 +30,7 @@ betRequest gameState@GameState{..} = do
                  | pot `div` small_blind < 20   = 2 
                  | pot `div` small_blind < 80   = 3 
                  | pot `div` small_blind < 140  = 4 
-                 | _                            = 4
+                 | otherwise                    = 4
              
         play = 
             case strategy of
