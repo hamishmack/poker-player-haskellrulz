@@ -1,29 +1,44 @@
+{-# LANGUAGE OverloadedStrings #-}
 module GameState where
 
+import qualified Data.ByteString.Lazy.Char8 as BS
 import Data.Text
 import Data.Aeson
 
+-- $setup
+-- >>> import Data.Either (isRight)
 
-data Game
-  = Game 
+-- |
+-- >>> parseGameState . BS.pack <$> readFile "test/GameStateSample.json"
+-- Right (GameState {tournament_id = "550d1d68cd7bd10003000003", game_id = "550da1cb2d909006e90004b1", round = 0, bet_index = 0, small_blind = 10, current_buy_in = 320, pot = 400, minimum_raise = 240, dealer = 1, orbits = 7, in_action = 1, players = [Player {player_id = 0, name = "Albert", status = Active, version = "Default random player", stack = 1010, bet = 320, hole_cards = Nothing},Player {player_id = 1, name = "Bob", status = Active, version = "Default random player", stack = 1590, bet = 80, hole_cards = Just [Card Six Hearts,Card King Spades]},Player {player_id = 2, name = "Chuck", status = Out, version = "Default random player", stack = 0, bet = 0, hole_cards = Nothing}], community_cards = [Card Four Spades,Card Ace Hearts,Card Six Clubs]})
+
+parseGameState :: BS.ByteString -> Either String GameState
+parseGameState = eitherDecode
+
+type Chips = Int
+type PlayerID = Int
+
+data GameState
+  = GameState
     { tournament_id    :: Text
     , game_id          :: Text
     , round            :: Int
     , bet_index        :: Int
-    , small_blind      :: Int
-    , current_buy_in   :: Int
-    , pot              :: Int 
-    , minimum_raise    :: Int
-    , dealer           :: Int
+    , small_blind      :: Chips
+    , current_buy_in   :: Chips
+    , pot              :: Chips
+    , minimum_raise    :: Chips
+    , dealer           :: PlayerID
     , orbits           :: Int   
-    , in_action        :: Int
+    , in_action        :: PlayerID
     , players          :: [ Player ]
     , community_cards  :: [ Card ]
     } deriving (Eq, Show)
 
-instance FromJSON Game where
+instance FromJSON GameState where
     parseJSON (Object v) 
-        = Game <$> v .: "tournament_id" 
+        = GameState 
+               <$> v .: "tournament_id" 
                <*> v .: "game_id"
                <*> v .: "round"
                <*> v .: "bet_index"
@@ -38,16 +53,23 @@ instance FromJSON Game where
                <*> v .: "community_cards"
     parseJSON _  = error "Not an object"
 
+data Status = Active | Folded | Out
+    deriving (Enum, Eq, Show)
+instance FromJSON Status where
+    parseJSON (String "active") = return Active
+    parseJSON (String "folded") = return Folded
+    parseJSON (String "out")    = return Out
+    parseJSON _ = error "Unknown Player Status"
 
 data Player 
   = Player
-    { player_id  :: Int
+    { player_id  :: PlayerID
     , name       :: Text
-    , status     :: Text
+    , status     :: Status
     , version    :: Text
-    , stack      :: Int
-    , bet        :: Int
-    , hole_cards :: [ Card ]
+    , stack      :: Chips
+    , bet        :: Chips
+    , hole_cards :: Maybe [ Card ]
     } deriving (Eq, Show)
 
 instance FromJSON Player where
@@ -58,7 +80,7 @@ instance FromJSON Player where
                  <*> v .: "version"
                  <*> v .: "stack"
                  <*> v .: "bet"
-                 <*> v .: "hole_cards"
+                 <*> v .:? "hole_cards"
     parseJSON _  = error "Not an object"
 
 data Rank = Two | Three | Four | Five | Six | Seven | Eight | Nine
