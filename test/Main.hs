@@ -5,4 +5,4 @@ module Main (
 import Test.DocTest
 
 main :: IO ()
-main = doctest ["-i.", "Player.hs", "PlayerService.hs"]
+main = doctest ["-i.", "Player.hs", "PlayerService.hs", "GameState.hs"]
